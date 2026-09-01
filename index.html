@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Karl Marx 的朋友圈 · 1848</title>
+<style>
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body {
+  margin: 0; padding: 0; background: #d9dde2;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+  color: #1a1a1a;
+}
+.phone {
+  max-width: 480px; margin: 0 auto; min-height: 100vh; background: #ededed;
+  box-shadow: 0 0 30px rgba(0,0,0,.15); position: relative; padding-bottom: 210px;
+}
+
+/* 顶部 */
+.topbar {
+  position: sticky; top: 0; z-index: 20; display: flex; align-items: center;
+  justify-content: space-between; height: 48px; padding: 0 14px;
+  background: #f7f7f7; border-bottom: 1px solid #dcdcdc;
+}
+.topbar .back { font-size: 28px; color: #333; line-height: 1; margin-top: -4px; width: 32px; }
+.topbar .title { font-size: 17px; font-weight: 600; }
+.topbar .gear {
+  width: 32px; text-align: right; font-size: 18px; color: #576b95;
+  cursor: pointer; background: none; border: none; padding: 0;
+}
+
+/* 模式条 */
+.modebar {
+  display: flex; align-items: center; gap: 8px; padding: 7px 14px;
+  font-size: 12px; background: #fdf1e3; color: #a3702a;
+  border-bottom: 1px solid #f2e3cd;
+}
+.modebar .dot { width: 7px; height: 7px; border-radius: 50%; background: #d89a3c; }
+.modebar.live { background: #eaf7ec; color: #3a9a52; border-bottom-color: #d5efda; }
+.modebar.live .dot { background: #3ec26a; }
+.modebar .room { margin-left: auto; font-weight: 700; letter-spacing: 1px; }
+.modebar .link { color: inherit; text-decoration: underline; cursor: pointer; }
+
+/* 封面 */
+.cover { position: relative; height: 230px; background: linear-gradient(135deg,#2c3e50,#4a6572); overflow: visible; }
+.cover > svg { width: 100%; height: 100%; display: block; }
+.cover-name {
+  position: absolute; right: 108px; bottom: 46px; color: #fff; font-size: 19px;
+  font-weight: 600; text-shadow: 0 2px 8px rgba(0,0,0,.5);
+}
+.cover-avatar {
+  position: absolute; right: 16px; bottom: -18px; width: 74px; height: 74px;
+  border-radius: 8px; border: 3px solid #fff; background: #fff; overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,.18);
+}
+.cover-avatar svg { width: 100%; height: 100%; display: block; }
+
+/* 动态 */
+.post { background: #fff; margin-top: 26px; padding: 16px 16px 8px; border-bottom: 1px solid #e4e4e4; }
+.p-name { color: #576b95; font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+.p-text { font-size: 15.5px; line-height: 1.72; margin-bottom: 10px; word-break: break-word; }
+.post-images { margin: 8px 0 10px; max-width: 62%; }
+.post-images svg { width: 100%; height: auto; display: block; border-radius: 4px; background: #f2f2f2; }
+
+/* 定位 */
+.post-location { display: flex; align-items: baseline; gap: 6px; font-size: 13px; color: #576b95; margin: 6px 0 12px; flex-wrap: wrap; }
+.post-location .loc-time { margin-left: auto; color: #9a9a9a; font-size: 12px; }
+
+/* 点赞 */
+.post-actions { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid #f0f0f0; font-size: 13px; color: #7a7a7a; }
+.like-btn {
+  display: inline-flex; align-items: center; gap: 4px; background: #f6f6f6; border: none;
+  border-radius: 14px; padding: 5px 12px; font-size: 13px; color: #7a7a7a; cursor: pointer; transition: .15s;
+}
+.like-btn:active { transform: scale(.94); }
+.like-btn.liked { background: #fdeaea; color: #e35b4a; }
+.like-btn.liked .heart { animation: pop .35s ease; }
+@keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.45)} 100%{transform:scale(1)} }
+.divider { color: #ddd; }
+
+/* 评论 */
+.comment-area { background: #f7f7f7; margin: 0 -16px; padding: 4px 16px 10px; }
+.comment { display: flex; gap: 8px; padding: 9px 0; border-bottom: 1px solid #efefef; animation: fadein .3s ease; }
+.comment:last-child { border-bottom: none; }
+@keyframes fadein { from{opacity:0;transform:translateY(4px)} to{opacity:1} }
+.c-avatar {
+  flex: 0 0 30px; width: 30px; height: 30px; border-radius: 4px; color: #fff;
+  font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center;
+}
+.c-body { flex: 1; min-width: 0; }
+.c-head { display: flex; align-items: baseline; gap: 8px; }
+.c-name { color: #576b95; font-size: 14px; font-weight: 500; }
+.c-time { color: #b0b0b0; font-size: 11px; margin-left: auto; }
+.c-text { font-size: 14.5px; line-height: 1.6; margin-top: 2px; word-break: break-word; }
+.comment.seed .c-name { color: #c0392b; }
+.comment.seed .c-name::after {
+  content: "剧情"; font-size: 10px; background: #c0392b; color: #fff; border-radius: 3px;
+  padding: 1px 4px; margin-left: 5px; vertical-align: 1px;
+}
+.comment.mine .c-name::after { content: "我"; font-size: 10px; background: #07c160; color: #fff; border-radius: 3px; padding: 1px 4px; margin-left: 5px; }
+.empty { padding: 14px 0; color: #aaa; font-size: 13px; text-align: center; }
+
+/* 输入 */
+.input-bar {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px;
+  background: #f7f7f7; border-top: 1px solid #dcdcdc; padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  display: flex; flex-wrap: wrap; gap: 8px; z-index: 30;
+}
+.name-input {
+  width: 100%; border: 1px solid #ddd; border-radius: 6px; padding: 7px 10px;
+  font-size: 13px; outline: none; background: #fff;
+}
+.name-input:focus { border-color: #576b95; }
+.text-input {
+  flex: 1; min-width: 58%; border: 1px solid #ddd; border-radius: 6px; padding: 9px 10px;
+  font-size: 14px; resize: none; outline: none; background: #fff; font-family: inherit; max-height: 90px;
+}
+.text-input:focus { border-color: #576b95; }
+.text-input.shake { animation: shake .4s; border-color: #e35b4a; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+.submit-btn {
+  border: none; background: #07c160; color: #fff; border-radius: 6px; padding: 0 16px;
+  font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap;
+}
+.submit-btn:disabled { background: #a5dfbe; cursor: default; }
+
+.toolbar { display: flex; gap: 8px; justify-content: center; padding: 12px 16px 4px; }
+.tool-btn {
+  border: 1px solid #dcdcdc; background: #fff; border-radius: 14px; padding: 5px 12px;
+  font-size: 12px; color: #666; cursor: pointer;
+}
+.tool-btn:active { background: #f0f0f0; }
+.tip { text-align: center; color: #9a9a9a; font-size: 12px; padding: 8px 20px 22px; line-height: 1.7; }
+
+/* 弹窗 */
+.mask {
+  position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 50;
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.mask.show { display: flex; }
+.modal {
+  background: #fff; border-radius: 12px; width: 100%; max-width: 380px; padding: 18px;
+  max-height: 86vh; overflow-y: auto;
+}
+.modal h3 { margin: 0 0 4px; font-size: 17px; }
+.modal .sub { color: #888; font-size: 12.5px; margin-bottom: 14px; line-height: 1.6; }
+.modal label { display: block; font-size: 13px; color: #444; margin: 12px 0 5px; }
+.modal input[type=text] {
+  width: 100%; border: 1px solid #ddd; border-radius: 6px; padding: 9px 10px;
+  font-size: 15px; outline: none; text-align: center; letter-spacing: 3px; font-weight: 600;
+}
+.modal input[type=text]:focus { border-color: #576b95; }
+.btn {
+  width: 100%; border: none; border-radius: 8px; padding: 11px; font-size: 15px;
+  font-weight: 600; cursor: pointer; margin-top: 12px;
+}
+.btn.primary { background: #07c160; color: #fff; }
+.btn.plain { background: #f2f2f2; color: #555; }
+.btn.danger { background: #fdecea; color: #d9483b; }
+.btn:disabled { opacity: .55; cursor: default; }
+.qrbox { text-align: center; margin-top: 14px; }
+.qrbox img { width: 190px; height: 190px; border: 1px solid #eee; border-radius: 8px; background: #fff; }
+.qrbox .code { font-size: 26px; font-weight: 700; letter-spacing: 6px; color: #1a1a1a; margin: 6px 0 2px; }
+.qrbox .hint { font-size: 12px; color: #999; line-height: 1.6; }
+.status-line { font-size: 12.5px; margin-top: 10px; text-align: center; color: #888; min-height: 18px; }
+.status-line.ok { color: #3a9a52; }
+.status-line.err { color: #d9483b; }
+.divider-line { height: 1px; background: #eee; margin: 16px 0 4px; }
+
+/* 投影模式 */
+body.projector .phone { max-width: 900px; }
+body.projector .input-bar { max-width: 900px; }
+body.projector .p-text { font-size: 22px; line-height: 1.9; }
+body.projector .c-text { font-size: 20px; }
+body.projector .c-name { font-size: 18px; }
+body.projector .p-name { font-size: 22px; }
+body.projector .post-location { font-size: 17px; }
+body.projector .c-avatar { flex: 0 0 38px; width: 38px; height: 38px; font-size: 18px; }
+body.projector .cover { height: 300px; }
+body.projector .topbar { height: 56px; }
+body.projector .topbar .title { font-size: 20px; }
+
+@media (min-width: 900px) {
+  .phone { max-width: 620px; box-shadow: 0 0 60px rgba(0,0,0,.25); }
+  .input-bar { max-width: 620px; }
+}
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <header class="topbar">
+    <div class="back">‹</div>
+    <div class="title">朋友圈</div>
+    <button class="gear" id="gearBtn" title="设置">⚙</button>
+  </header>
+
+  <div class="modebar" id="modeBar">
+    <span class="dot"></span>
+    <span id="modeText">本地模式 · 评论存在本机</span>
+    <span class="room" id="roomChip"></span>
+    <span class="link" id="modeLink">开启全班实时</span>
+  </div>
+
+  <div class="cover" id="coverBox">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice">
+      <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#25313d"/><stop offset="55%" stop-color="#3d4f5f"/><stop offset="100%" stop-color="#1b242c"/>
+      </linearGradient></defs>
+      <rect width="600" height="400" fill="url(#sky)"/>
+      <g fill="#141c23" opacity=".85">
+        <rect x="20" y="250" width="46" height="150"/><rect x="72" y="222" width="30" height="178"/>
+        <rect x="108" y="266" width="52" height="134"/><rect x="168" y="238" width="34" height="162"/>
+        <rect x="210" y="200" width="26" height="200"/><path d="M236 200 L246 168 L256 200 Z"/>
+        <rect x="262" y="258" width="60" height="142"/><rect x="330" y="228" width="38" height="172"/>
+        <rect x="376" y="270" width="48" height="130"/><rect x="430" y="214" width="30" height="186"/>
+        <path d="M445 214 L445 186 L458 196 L458 214 Z"/><rect x="466" y="252" width="56" height="148"/>
+        <rect x="530" y="232" width="44" height="168"/>
+      </g>
+      <g fill="#141c23"><rect x="352" y="196" width="12" height="34"/></g>
+      <g fill="#7f8c99" opacity=".28">
+        <ellipse cx="358" cy="180" rx="26" ry="16"/><ellipse cx="376" cy="150" rx="34" ry="20"/><ellipse cx="404" cy="116" rx="42" ry="24"/>
+      </g>
+      <g fill="#e0a95c" opacity=".55">
+        <rect x="34" y="272" width="7" height="10"/><rect x="52" y="272" width="7" height="10"/>
+        <rect x="118" y="286" width="7" height="10"/><rect x="136" y="286" width="7" height="10"/>
+        <rect x="276" y="280" width="7" height="10"/><rect x="294" y="280" width="7" height="10"/>
+        <rect x="276" y="306" width="7" height="10"/><rect x="388" y="292" width="7" height="10"/>
+        <rect x="478" y="274" width="7" height="10"/><rect x="496" y="274" width="7" height="10"/>
+        <rect x="546" y="252" width="7" height="10"/><rect x="546" y="278" width="7" height="10"/>
+      </g>
+      <rect y="330" width="600" height="70" fill="#1b242c" opacity=".55"/>
+    </svg>
+    <div class="cover-name">Karl Marx</div>
+    <div class="cover-avatar">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+        <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#5a6b7a"/><stop offset="100%" stop-color="#33404c"/>
+        </linearGradient></defs>
+        <rect width="300" height="300" fill="url(#bg)"/>
+        <path d="M60 300 C60 232 96 208 150 208 C204 208 240 232 240 300 Z" fill="#1d252c"/>
+        <rect x="132" y="182" width="36" height="34" fill="#c99a72"/>
+        <path d="M150 48 C196 48 214 84 212 124 C210 160 190 186 150 186 C110 186 90 160 88 124 C86 84 104 48 150 48 Z" fill="#e8bb90"/>
+        <path d="M86 118 C74 60 108 26 150 26 C192 26 226 60 214 118 C208 100 196 78 172 72 C150 84 118 84 96 74 C90 88 88 104 86 118 Z" fill="#2b2b2b"/>
+        <path d="M84 110 C72 96 76 74 92 66 C86 84 86 98 90 112 Z" fill="#2b2b2b"/>
+        <path d="M108 108 C120 100 136 100 146 106 L144 114 C134 110 120 110 110 116 Z" fill="#3a3a3a"/>
+        <path d="M192 108 C180 100 164 100 154 106 L156 114 C166 110 180 110 190 116 Z" fill="#3a3a3a"/>
+        <ellipse cx="126" cy="126" rx="8" ry="6" fill="#3a2a1e"/><ellipse cx="174" cy="126" rx="8" ry="6" fill="#3a2a1e"/>
+        <circle cx="128.5" cy="124" r="2" fill="#fff"/><circle cx="176.5" cy="124" r="2" fill="#fff"/>
+        <path d="M150 128 C147 142 143 150 146 154 C149 157 155 156 157 153" stroke="#c99a72" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M96 140 C96 176 116 200 150 200 C184 200 204 176 204 140 C204 158 196 170 178 174 C170 166 160 162 150 162 C140 162 130 166 122 174 C104 170 96 158 96 140 Z" fill="#2b2b2b"/>
+        <path d="M120 158 C130 182 170 182 180 158 C176 176 164 188 150 188 C136 188 124 176 120 158 Z" fill="#3a3a3a"/>
+        <path d="M138 168 C144 172 156 172 162 168" stroke="#8c4a3c" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <section class="post">
+    <div class="p-name">Karl Marx</div>
+    <div class="p-text">
+      终于完成了。<br><br>
+      几个月的讨论、争论与修改，最后一次校对也结束了。这本小册子很薄，
+      但里面写的是我们关于这个世界如何运转的全部看法。<br><br>
+      一个幽灵，共产主义的幽灵，在欧洲游荡。
+    </div>
+
+    <div class="post-images">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 594">
+        <defs><linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#f6ecd8"/><stop offset="100%" stop-color="#e6d7b8"/>
+        </linearGradient></defs>
+        <rect width="420" height="594" fill="url(#paper)"/>
+        <rect x="16" y="16" width="388" height="562" fill="none" stroke="#8f2f22" stroke-width="4"/>
+        <rect x="26" y="26" width="368" height="542" fill="none" stroke="#8f2f22" stroke-width="1.2"/>
+        <text x="210" y="86" text-anchor="middle" font-family="Georgia, serif" font-size="17" fill="#8f2f22" letter-spacing="6">1848</text>
+        <text x="210" y="180" text-anchor="middle" font-family="Georgia, serif" font-size="52" font-weight="bold" fill="#8f2f22" letter-spacing="2">MANIFEST</text>
+        <text x="210" y="228" text-anchor="middle" font-family="Georgia, serif" font-size="26" fill="#8f2f22" letter-spacing="3">OF THE</text>
+        <text x="210" y="286" text-anchor="middle" font-family="Georgia, serif" font-size="46" font-weight="bold" fill="#8f2f22" letter-spacing="1">COMMUNIST</text>
+        <text x="210" y="338" text-anchor="middle" font-family="Georgia, serif" font-size="46" font-weight="bold" fill="#8f2f22" letter-spacing="1">PARTY</text>
+        <line x1="120" y1="368" x2="300" y2="368" stroke="#8f2f22" stroke-width="1.5"/>
+        <text x="210" y="416" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="40" font-weight="bold" fill="#6f2418" letter-spacing="8">共产党宣言</text>
+        <text x="210" y="470" text-anchor="middle" font-family="Georgia, serif" font-size="15" fill="#5a4a33" font-style="italic">Karl Marx &#183; Friedrich Engels</text>
+        <text x="210" y="520" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#7a6a52" letter-spacing="2">伦敦 · 利物浦街 46 号</text>
+        <text x="210" y="546" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#7a6a52" letter-spacing="2">1848 年 2 月 · 首版</text>
+        <text x="210" y="586" text-anchor="middle" font-family="Georgia, serif" font-size="20" fill="#8f2f22" letter-spacing="10">&#10086;</text>
+      </svg>
+    </div>
+
+    <div class="post-location">
+      <span>📍</span>
+      <span>伦敦 · 1848年2月</span>
+      <span class="loc-time">1848年2月21日</span>
+    </div>
+
+    <div class="post-actions">
+      <button id="likeBtn" class="like-btn"><span class="heart">❤️</span><span id="likeCount">23</span></button>
+      <span class="divider">|</span>
+      <span>💬 <span id="commentCount">0</span></span>
+    </div>
+
+    <div class="comment-area">
+      <div id="commentList"><div class="empty">加载中…</div></div>
+    </div>
+  </section>
+
+  <div class="toolbar">
+    <button class="tool-btn" id="exportBtn">导出评论</button>
+    <button class="tool-btn" id="projectorBtn">投影模式</button>
+    <button class="tool-btn" id="clearBtn">清空评论</button>
+  </div>
+
+  <div class="tip" id="tipText">评论保存在这台设备上 · 点右上角 ⚙ 可开启全班实时同步</div>
+
+  <div class="input-bar">
+    <input type="text" id="nameInput" class="name-input" placeholder="你的名字（必填）" maxlength="16">
+    <textarea id="textInput" class="text-input" rows="1" placeholder="写下你的评论……（Ctrl+Enter 发送）" maxlength="200"></textarea>
+    <button id="submitBtn" class="submit-btn">发表</button>
+  </div>
+
+</div>
+
+<div class="mask" id="mask">
+  <div class="modal">
+    <h3>全班实时评论</h3>
+    <div class="sub">开启后，同学在自己手机上输入同一个房间号，评论就能互相看到、实时刷新。不需要连同一个 WiFi，也不需要服务器。</div>
+
+    <label>房间号（6 位数字，告诉全班即可）</label>
+    <input type="text" id="roomInput" maxlength="6" placeholder="如 184802">
+
+    <button class="btn primary" id="joinBtn">开启 / 加入房间</button>
+    <div class="status-line" id="statusLine"></div>
+
+    <div class="qrbox" id="qrBox" style="display:none">
+      <img id="qrImg" alt="房间号二维码">
+      <div class="code" id="qrCode"></div>
+      <div class="hint">扫码看到房间号后，在页面里输入即可加入</div>
+    </div>
+
+    <div class="divider-line"></div>
+    <button class="btn plain" id="offlineBtn">退回本地模式</button>
+    <button class="btn danger" id="resetBtn">清空全部评论</button>
+    <button class="btn plain" id="closeBtn">关闭</button>
+  </div>
+</div>
+
+<script>
+
+/* ==========================================================
+   马克思的朋友圈 · 单文件版
+   本地模式：离线可用，评论存在浏览器
+   实时模式：通过公共 MQTT 通道跨设备同步，不需要局域网和服务器
+   ========================================================== */
+
+(function () {
+  'use strict';
+
+  // ---------- 常量 ----------
+  var LS_KEY = 'marx_moments_single_v1';
+  var CID_KEY = 'marx_moments_cid';
+  var BASE_LIKES = 23;
+  var TOPIC_PREFIX = 'marx1848/';
+
+  var BROKERS = [
+    'wss://broker.emqx.io:8084/mqtt',
+    'wss://broker.hivemq.com:8884/mqtt',
+    'wss://test.mosquitto.org:8081/mqtt'
+  ];
+
+  var SEED = [
+    { id: 'seed1', name: 'Friedrich Engels', text: '写完了，但真正的考验才刚开始。', time: Date.now() - 3600000, seed: true },
+    { id: 'seed2', name: '张三', text: '一本小册子真的能改变世界吗？', time: Date.now() - 3000000, seed: true },
+    { id: 'seed3', name: '李四', text: '这应该是一个很重要的开始。', time: Date.now() - 2400000, seed: true }
+  ];
+
+  // ---------- 工具 ----------
+  function $(id) { return document.getElementById(id); }
+  function enc(s) { return new TextEncoder().encode(s); }
+  function dec(b) { return new TextDecoder().decode(b); }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function fmtTime(ts) {
+    var d = new Date(ts), p = function (n) { return n < 10 ? '0' + n : '' + n; };
+    return p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+
+  function hue(str) {
+    var h = 0;
+    for (var i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) % 360;
+    return 'hsl(' + h + ',58%,62%)';
+  }
+
+  function randId() {
+    return Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+  }
+
+  function myCid() {
+    var c = localStorage.getItem(CID_KEY);
+    if (!c) { c = randId(); localStorage.setItem(CID_KEY, c); }
+    return c;
+  }
+
+  // ---------- 状态 ----------
+  var state = { likes: [], comments: [] };
+  var live = { on: false, room: '', mqtt: null, topic: '', timer: null };
+
+  function loadLocal() {
+    try {
+      var raw = localStorage.getItem(LS_KEY);
+      if (raw) {
+        var o = JSON.parse(raw);
+        state.likes = o.likes || [];
+        state.comments = o.comments || [];
+        return;
+      }
+    } catch (e) {}
+    state.likes = [];
+    state.comments = SEED.slice();
+  }
+
+  function saveLocal() {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  // 合并远端状态：评论按 id 去重，点赞按 cid 去重
+  function merge(remote) {
+    if (!remote || typeof remote !== 'object') return false;
+    var changed = false;
+    var seen = {};
+    state.comments.forEach(function (c) { seen[c.id] = 1; });
+    (remote.comments || []).forEach(function (c) {
+      if (c && c.id && !seen[c.id]) { state.comments.push(c); seen[c.id] = 1; changed = true; }
+    });
+    (remote.likes || []).forEach(function (id) {
+      if (state.likes.indexOf(id) < 0) { state.likes.push(id); changed = true; }
+    });
+    return changed;
+  }
+
+  function snapshot() {
+    return { v: 1, likes: state.likes, comments: state.comments, updated: Date.now() };
+  }
+
+  // ---------- 渲染 ----------
+  function render() {
+    $('likeCount').textContent = BASE_LIKES + state.likes.length;
+    $('commentCount').textContent = state.comments.length;
+
+    var mine = myCid();
+    var box = $('commentList');
+    if (!state.comments.length) {
+      box.innerHTML = '<div class="empty">还没有人评论，来抢第一条。</div>';
+      return;
+    }
+    var sorted = state.comments.slice().sort(function (a, b) { return (a.time || 0) - (b.time || 0); });
+    box.innerHTML = sorted.map(function (c) {
+      var cls = 'comment' + (c.seed ? ' seed' : '') + (c.cid === mine ? ' mine' : '');
+      return '<div class="' + cls + '">' +
+        '<div class="c-avatar" style="background:' + hue(c.name || '?') + '">' +
+        escapeHtml((c.name || '?').trim().charAt(0).toUpperCase()) + '</div>' +
+        '<div class="c-body"><div class="c-head"><span class="c-name">' + escapeHtml(c.name || '匿名') +
+        '</span><span class="c-time">' + fmtTime(c.time || Date.now()) + '</span></div>' +
+        '<div class="c-text">' + escapeHtml(c.text || '') + '</div></div></div>';
+    }).join('');
+  }
+
+  function setMode(on, text) {
+    var bar = $('modeBar'), chip = $('roomChip'), link = $('modeLink');
+    if (on) {
+      bar.className = 'modebar live';
+      bar.firstElementChild.className = 'dot';
+      $('modeText').textContent = text || '实时同步中 · 全班可见';
+      chip.textContent = '房间 ' + live.room;
+      link.textContent = '退出';
+    } else {
+      bar.className = 'modebar';
+      $('modeText').textContent = '本地模式 · 评论存在本机';
+      chip.textContent = '';
+      link.textContent = '开启全班实时';
+    }
+    $('tipText').textContent = on
+      ? '全班实时同步中 · 同学输入房间号 ' + live.room + ' 即可加入'
+      : '评论保存在这台设备上 · 点右上角 ⚙ 可开启全班实时同步';
+  }
+
+  function status(msg, cls) {
+    var el = $('statusLine');
+    el.textContent = msg || '';
+    el.className = 'status-line' + (cls ? ' ' + cls : '');
+  }
+
+  // ---------- 最小 MQTT over WebSocket 客户端 ----------
+  function MiniMQTT() {
+    this.ws = null;
+    this.buf = new Uint8Array(0);
+    this.handlers = [];
+    this.ping = null;
+    this.onready = null;
+    this.ready = false;
+  }
+
+  MiniMQTT.prototype.varLen = function (n) {
+    var out = [];
+    do { var b = n % 128; n = Math.floor(n / 128); if (n > 0) b |= 0x80; out.push(b); } while (n > 0);
+    return out;
+  };
+
+  MiniMQTT.prototype.connect = function (url, clientId) {
+    var self = this;
+    return new Promise(function (resolve, reject) {
+      var ws;
+      try { ws = new WebSocket(url, 'mqtt'); } catch (e) { reject(e); return; }
+      ws.binaryType = 'arraybuffer';
+      self.ws = ws;
+
+      var timer = setTimeout(function () {
+        try { ws.close(); } catch (e) {}
+        reject(new Error('连接超时'));
+      }, 12000);
+
+      ws.onopen = function () {
+        var cid = enc(clientId);
+        var vh = [0x00, 0x04, 0x4D, 0x51, 0x54, 0x54, 0x04, 0x02, 0x00, 0x3C];
+        var body = vh.concat([cid.length >> 8, cid.length & 0xFF]).concat(Array.from(cid));
+        ws.send(new Uint8Array([0x10].concat(self.varLen(body.length)).concat(body)));
+      };
+
+      ws.onmessage = function (ev) {
+        self._feed(new Uint8Array(ev.data));
+        if (self.ready) { clearTimeout(timer); resolve(true); }
+      };
+
+      ws.onerror = function () { clearTimeout(timer); reject(new Error('连接失败')); };
+      ws.onclose = function () {
+        clearTimeout(timer);
+        self.ready = false;
+        if (self.ping) { clearInterval(self.ping); self.ping = null; }
+        reject(new Error('连接已关闭'));
+      };
+    });
+  };
+
+  MiniMQTT.prototype._feed = function (bytes) {
+    var merged = new Uint8Array(this.buf.length + bytes.length);
+    merged.set(this.buf, 0);
+    merged.set(bytes, this.buf.length);
+    this.buf = merged;
+
+    for (;;) {
+      if (this.buf.length < 2) return;
+      var first = this.buf[0];
+      var type = first >> 4;
+      var mult = 1, len = 0, idx = -1;
+      for (var i = 1; i < 5; i++) {
+        len += (this.buf[i] & 0x7F) * mult;
+        if ((this.buf[i] & 0x80) === 0) { idx = i + 1; break; }
+        mult *= 128;
+      }
+      if (idx < 0) { if (this.buf.length >= 5) this.buf = new Uint8Array(0); return; }
+      if (this.buf.length < idx + len) return;
+
+      var body = this.buf.slice(idx, idx + len);
+      this.buf = this.buf.slice(idx + len);
+      this._packet(type, body, first);
+    }
+  };
+
+  MiniMQTT.prototype._packet = function (type, body, first) {
+    var self = this;
+    if (type === 2) {                       // CONNACK
+      if (body.length >= 2 && body[1] === 0) {
+        this.ready = true;
+        this.ping = setInterval(function () {
+          if (self.ws && self.ws.readyState === 1) self.ws.send(new Uint8Array([0xC0, 0x00]));
+        }, 30000);
+      }
+      return;
+    }
+    if (type === 3) {                       // PUBLISH
+      var tl = (body[0] << 8) | body[1];
+      var topic = dec(body.slice(2, 2 + tl));
+      var payload = dec(body.slice(2 + tl));
+      this.handlers.forEach(function (h) {
+        if (h.topic === topic) { try { h.cb(payload); } catch (e) {} }
+      });
+      return;
+    }
+    if (type === 13) return;                // PINGRESP
+  };
+
+  MiniMQTT.prototype.subscribe = function (topic, cb) {
+    this.handlers.push({ topic: topic, cb: cb });
+    var t = enc(topic);
+    var body = [0x00, 0x01, t.length >> 8, t.length & 0xFF].concat(Array.from(t)).concat([0x00]);
+    this.ws.send(new Uint8Array([0x82].concat(this.varLen(body.length)).concat(body)));
+  };
+
+  MiniMQTT.prototype.publish = function (topic, payload, retain) {
+    if (!this.ws || this.ws.readyState !== 1) return;
+    var t = enc(topic), p = enc(payload);
+    var body = [t.length >> 8, t.length & 0xFF].concat(Array.from(t)).concat(Array.from(p));
+    var flags = 0x30 | (retain ? 0x01 : 0x00);
+    this.ws.send(new Uint8Array([flags].concat(this.varLen(body.length)).concat(body)));
+  };
+
+  MiniMQTT.prototype.close = function () {
+    if (this.ping) { clearInterval(this.ping); this.ping = null; }
+    if (this.ws) { try { this.ws.close(); } catch (e) {} }
+    this.ready = false;
+  };
+
+  // ---------- 实时模式 ----------
+  function publishNow() {
+    if (!live.on || !live.mqtt || !live.mqtt.ready) return;
+    live.mqtt.publish(live.topic, JSON.stringify(snapshot()), true);
+  }
+
+  function publishDebounced() {
+    if (!live.on) return;
+    if (live.timer) clearTimeout(live.timer);
+    live.timer = setTimeout(publishNow, 400 + Math.random() * 500);
+  }
+
+  function joinRoom(room) {
+    var btn = $('joinBtn');
+    btn.disabled = true;
+    status('正在连接实时通道…');
+
+    var mqtt = new MiniMQTT();
+    var cid = 'marx-' + myCid().slice(0, 10);
+    var topic = TOPIC_PREFIX + room + '/state';
+    var idx = 0;
+
+    function tryNext() {
+      if (idx >= BROKERS.length) {
+        btn.disabled = false;
+        status('实时通道连接失败（网络可能限制了端口），已留在本地模式', 'err');
+        return;
+      }
+      var url = BROKERS[idx++];
+      status('正在连接 ' + url.split('/')[2] + ' …');
+
+      var m = (idx === 1) ? mqtt : new MiniMQTT();
+      m.connect(url, cid).then(function () {
+        live.mqtt = m;
+        live.on = true;
+        live.room = room;
+        live.topic = topic;
+
+        m.subscribe(topic, function (payload) {
+          try {
+            var remote = JSON.parse(payload);
+            if (merge(remote)) { saveLocal(); render(); }
+          } catch (e) {}
+        });
+
+        // 拉到历史状态后，把本地内容补上去（防止本机评论丢失）
+        setTimeout(function () {
+          m.publish(topic, JSON.stringify(snapshot()), true);
+        }, 900);
+
+        setMode(true);
+        $('roomInput').value = room;
+        showQR(room);
+        btn.disabled = false;
+        status('已连接 · 房间 ' + room + ' · 把房间号告诉全班', 'ok');
+        try { localStorage.setItem('marx_room', room); } catch (e) {}
+      }).catch(function () {
+        try { m.close(); } catch (e) {}
+        tryNext();
+      });
+    }
+
+    tryNext();
+  }
+
+  function showQR(room) {
+    var box = $('qrBox');
+    box.style.display = 'block';
+    $('qrCode').textContent = room;
+    var text = '马克思的朋友圈 房间号 ' + room;
+    var img = $('qrImg');
+    img.onload = function () { img.style.display = 'inline-block'; };
+    img.onerror = function () { img.style.display = 'none'; };
+    img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=' + encodeURIComponent(text);
+  }
+
+  function leaveRoom() {
+    if (live.mqtt) live.mqtt.close();
+    live.on = false; live.mqtt = null; live.room = ''; live.topic = '';
+    setMode(false);
+    $('qrBox').style.display = 'none';
+    try { localStorage.removeItem('marx_room'); } catch (e) {}
+  }
+
+  // ---------- 交互 ----------
+  function submit() {
+    var nameEl = $('nameInput'), textEl = $('textInput'), btn = $('submitBtn');
+    var name = (nameEl.value || '').trim();
+    var text = (textEl.value || '').trim();
+
+    if (!name) {
+      nameEl.focus();
+      nameEl.classList.add('shake');
+      setTimeout(function () { nameEl.classList.remove('shake'); }, 500);
+      status2('先填名字再发评论');
+      return;
+    }
+    if (!text) {
+      textEl.focus();
+      textEl.classList.add('shake');
+      setTimeout(function () { textEl.classList.remove('shake'); }, 500);
+      return;
+    }
+
+    state.comments.push({
+      id: randId(), cid: myCid(), name: name.slice(0, 16),
+      text: text.slice(0, 200), time: Date.now()
+    });
+    textEl.value = '';
+    saveLocal();
+    render();
+    publishDebounced();
+    setTimeout(function () {
+      var el = document.querySelector('.comment.mine');
+      if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 60);
+  }
+
+  var tipTimer = null;
+  function status2(msg) {
+    var el = $('tipText');
+    if (live.on) return;
+    el.textContent = msg;
+    clearTimeout(tipTimer);
+    tipTimer = setTimeout(function () {
+      el.textContent = '评论保存在这台设备上 · 点右上角 ⚙ 可开启全班实时同步';
+    }, 2200);
+  }
+
+  function like() {
+    var cid = myCid();
+    if (state.likes.indexOf(cid) >= 0) return;
+    state.likes.push(cid);
+    saveLocal();
+    render();
+    publishDebounced();
+    $('likeBtn').classList.add('liked');
+  }
+
+  function exportTxt() {
+    var lines = ['Karl Marx 的一条朋友圈 · 评论区导出', '📍伦敦 · 1848年2月', '点赞：' + (BASE_LIKES + state.likes.length), '', ''];
+    state.comments.slice().sort(function (a, b) { return (a.time || 0) - (b.time || 0); }).forEach(function (c) {
+      lines.push((c.name || '匿名') + '：' + (c.text || ''));
+    });
+    var blob = new Blob([lines.join('\r\n')], { type: 'text/plain;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = '马克思朋友圈评论.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  }
+
+  function clearAll() {
+    if (!confirm('确定清空所有同学的真实评论吗？（剧情评论会保留）')) return;
+    state.comments = SEED.slice();
+    state.likes = [];
+    saveLocal();
+    render();
+    publishDebounced();
+    $('likeBtn').classList.remove('liked');
+  }
+
+  // ---------- 初始化 ----------
+  function init() {
+    loadLocal();
+    render();
+    setMode(false);
+    if (state.likes.indexOf(myCid()) >= 0) $('likeBtn').classList.add('liked');
+
+    var savedName = localStorage.getItem('marx_name');
+    if (savedName) $('nameInput').value = savedName;
+    $('nameInput').addEventListener('change', function () {
+      localStorage.setItem('marx_name', this.value.trim());
+    });
+
+    $('submitBtn').addEventListener('click', submit);
+    $('likeBtn').addEventListener('click', like);
+    $('textInput').addEventListener('keydown', function (e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') submit();
+    });
+
+    $('gearBtn').addEventListener('click', function () { $('mask').classList.add('show'); });
+    $('closeBtn').addEventListener('click', function () { $('mask').classList.remove('show'); });
+    $('mask').addEventListener('click', function (e) {
+      if (e.target === $('mask')) $('mask').classList.remove('show');
+    });
+
+    $('modeLink').addEventListener('click', function () {
+      if (live.on) { leaveRoom(); status('已退出实时模式'); }
+      else $('mask').classList.add('show');
+    });
+
+    $('joinBtn').addEventListener('click', function () {
+      var room = ($('roomInput').value || '').trim();
+      if (!/^\d{4,8}$/.test(room)) {
+        status('房间号请输入 4-8 位数字', 'err');
+        return;
+      }
+      joinRoom(room);
+    });
+
+    $('offlineBtn').addEventListener('click', function () {
+      leaveRoom();
+      status('已退回本地模式，评论只存在这台设备');
+    });
+
+    $('resetBtn').addEventListener('click', clearAll);
+    $('exportBtn').addEventListener('click', exportTxt);
+    $('clearBtn').addEventListener('click', clearAll);
+    $('projectorBtn').addEventListener('click', function () {
+      document.body.classList.toggle('projector');
+      this.textContent = document.body.classList.contains('projector') ? '退出投影' : '投影模式';
+    });
+
+    // 自动加入：URL ?room=184802，或上次用过的房间
+    var m = /[?&]room=(\d{4,8})/.exec(location.search);
+    var last = null;
+    try { last = localStorage.getItem('marx_room'); } catch (e) {}
+    var auto = (m && m[1]) || last;
+    if (auto && navigator.onLine) {
+      $('roomInput').value = auto;
+      joinRoom(auto);
+    } else if (auto) {
+      $('roomInput').value = auto;
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
